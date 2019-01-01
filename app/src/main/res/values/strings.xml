@@ -1,0 +1,22 @@
+<resources>
+    <!-- Login Activity -->
+    <string name="app_name">CarbonBank</string>
+    <string name="text_username">Username</string>
+    <string name="text_password">Password</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="text_create_acc">Don\'t have an account? Create One</string>
+
+    <!-- Register Activity -->
+    <string name="text_confirm_password">Confirm Password</string>
+    <string name="text_email">E-mail</string>
+    <string name="for_company">For Company Register</string>
+    <string name="btn_sign_up">Sign Up</string>
+
+    <!-- For Company Register Activity -->
+    <string name="btn_company_sign_up">Sign up For Company</string>
+    <string name="text_owner_username">Owner by (Registered Username)</string>
+    <string name="text_company_reg_no">Company Registration Number</string>
+    <string name="text_company_name">Company Name</string>
+    <string name="text_company_pw">Company Password</string>
+
+</resources>

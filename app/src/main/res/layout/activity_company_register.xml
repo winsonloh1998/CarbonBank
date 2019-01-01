@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CompanyRegisterActivity">
+
+
+    <!-- Company Register Number Text Field -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_company_reg_id"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textfield_bg"
+        android:theme="@style/TextInputLayoutAppearance"
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText"
+        app:layout_constraintBottom_toTopOf="@+id/text_input_company_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/text_company_reg_no"
+            android:inputType="text"></android.support.design.widget.TextInputEditText>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Owner Username Text Field -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_owner_username"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textfield_bg"
+        android:theme="@style/TextInputLayoutAppearance"
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText"
+        app:layout_constraintBottom_toTopOf="@+id/btn_company_signUp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/text_owner_username"
+            android:inputType="text">
+
+        </android.support.design.widget.TextInputEditText>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Owner Password Text Field -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_company_password"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textfield_bg"
+        android:theme="@style/TextInputLayoutAppearance"
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText"
+        app:layout_constraintBottom_toTopOf="@+id/text_input_company_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:passwordToggleEnabled="true">
+
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/text_company_pw"
+            android:inputType="textPassword">
+        </android.support.design.widget.TextInputEditText>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <!-- Company Name Text Field -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_company_name"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textfield_bg"
+        android:theme="@style/TextInputLayoutAppearance"
+        app:errorEnabled="true"
+        app:errorTextAppearance="@style/ErrorText"
+        app:layout_constraintBottom_toTopOf="@+id/text_input_owner_username"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/text_company_name"
+            android:inputType="text">
+
+        </android.support.design.widget.TextInputEditText>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/btn_company_signUp"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/signin_btn_bg"
+        android:fontFamily="@font/open_sans"
+        android:onClick="permitCreateCompanyAcc"
+        android:text="@string/btn_company_sign_up"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewCompanyProfilePic"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/profile_pic_bg"
+        app:layout_constraintBottom_toTopOf="@+id/text_input_company_reg_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/company_profile_pic" />
+
+</android.support.constraint.ConstraintLayout>
