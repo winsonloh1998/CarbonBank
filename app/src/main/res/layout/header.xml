@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:background="@color/colorHintText"
+    android:padding="20dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        app:civ_border_color="@color/colorAccent"
+        app:civ_border_width="1dp"
+        android:src="@drawable/testimg"
+        android:id="@+id/drawerProfilePic"
+        android:layout_height="75dp"
+        android:layout_width="75dp">
+    </de.hdodenhof.circleimageview.CircleImageView>
+
+    <TextView
+        android:id="@+id/drawerDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Winson"
+        android:textColor="@color/colorAccent"
+        android:fontFamily="@font/open_sans"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/drawerEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="lohcc-pa16@student.tarc.edu.my"
+        android:textColor="@color/colorAccent"
+        android:fontFamily="@font/open_sans" />
+</LinearLayout>

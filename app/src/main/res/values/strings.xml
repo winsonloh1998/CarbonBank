@@ -19,4 +19,7 @@
     <string name="text_company_name">Company Name</string>
     <string name="text_company_pw">Company Password</string>
 
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
 </resources>

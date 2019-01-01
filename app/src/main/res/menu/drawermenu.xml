@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/upperPart">
+        <item android:id="@+id/home" android:title="Home" />
+        <item android:id="@+id/cc" android:title="Carbon Credit" />
+        <item android:id="@+id/ct" android:title="Carbon Tax" />
+
+    </group>
+
+    <group android:id="@+id/middlePart">
+        <item android:id="@+id/scanQrCode" android:title="Scan QR Code" />
+        <item android:id="@+id/qrCode" android:title="My QR Code"/>
+        <item android:id="@+id/nfc" android:title="NFC"/>
+    </group>
+
+    <group android:id="@+id/lowerPart">
+        <item android:id="@+id/setting" android:title="Settings" />
+        <item
+            android:id="@+id/logout"
+            android:title="Sign Out" />
+    </group>
+</menu>
