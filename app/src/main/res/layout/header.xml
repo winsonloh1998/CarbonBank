@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:background="@color/colorHintText"
+    android:background="@color/colorPrimaryDark"
     android:padding="20dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -19,7 +19,7 @@
         android:id="@+id/drawerDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Winson"
+        android:text="Display Name"
         android:textColor="@color/colorAccent"
         android:fontFamily="@font/open_sans"
         android:textStyle="bold"
@@ -29,7 +29,7 @@
         android:id="@+id/drawerEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="lohcc-pa16@student.tarc.edu.my"
+        android:text="Email"
         android:textColor="@color/colorAccent"
         android:fontFamily="@font/open_sans" />
 </LinearLayout>

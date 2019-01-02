@@ -58,12 +58,11 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputLayout textInputEmail;
     private Button btnSignUp;
     private ImageView imageViewProfilePic;
-   // private List<Users> allUser;
+    private static List<Users> usersList;
 
     private ProgressDialog pDialog;
     private static String GET_URL = "https://crocodilian-trade.000webhostapp.com/SelectUsers.php";
     RequestQueue queue;
-    private static boolean exist;
 
 
 //    private final int CODE_GALLERY_REQUEST = 999;
@@ -77,14 +76,13 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
         textInputUsername = findViewById(R.id.text_input_username);
         textInputPassword = findViewById(R.id.text_input_password);
         textInputConfirmPassword = findViewById(R.id.text_input_confirm_password);
         textInputEmail = findViewById(R.id.text_input_email);
         btnSignUp = findViewById(R.id.btn_signUp);
 
-        //allUser = new ArrayList<>();
+        usersList = new ArrayList<>();
         pDialog = new ProgressDialog(this);
 
         if (!isConnected()) {
@@ -107,42 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 
-
-    private boolean validateUser(){
-        String usernameInput = null;
-        if(textInputUsername.getEditText().getText().toString().trim() != null){
-            usernameInput = textInputUsername.getEditText().getText().toString().trim();
-        }
-
-        if (!pDialog.isShowing())
-            pDialog.setMessage("Validating new account...");
-        pDialog.show();
-
-        downloadUsers(getApplicationContext(),GET_URL);
-//        for(int i=0;i<allUser.size();i++){
-//            if(allUser.get(i).getUsername().equals(textInputUsername.getEditText().getText().toString())){
-//                exist = true;
-//                break;
-//            }
-//        }
-
-        if(usernameInput.isEmpty()){
-            textInputUsername.setError("Username can't be empty");
-            return false;
-        }else{
-            if(exist){
-                textInputUsername.setError("Username ["+textInputUsername.getEditText().getText().toString()+"] already exists. Please Try With Another One.");
-                return false;
-            }else {
-                textInputUsername.setError(null);
-                textInputUsername.setErrorEnabled(false);
-                return true;
-            }
-        }
-    }
-
     private boolean validatePassword(){
-
         boolean passwordAccept = false;
         boolean cPasswordAccept = false;
         String passwordInput = null;
@@ -183,7 +146,6 @@ public class RegisterActivity extends AppCompatActivity {
         }else{
             return  false;
         }
-
     }
 
     private boolean validateEmail(){
@@ -258,11 +220,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    public void downloadUsers(Context context,String url){
+    public void downloadUsers(final Context context, String username){
         // Instantiate the RequestQueue
         queue = Volley.newRequestQueue(context);
+        String url = GET_URL + "?Username=" + username;
 
-        boolean result = true;
+        if (!pDialog.isShowing())
+            pDialog.setMessage("Validating new account...");
+        pDialog.show();
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 url,
@@ -270,21 +235,19 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            //allUser.clear();
+                            usersList.clear();
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject usersResponse = (JSONObject) response.get(i);
                                 String username = usersResponse.getString("Username");
-                                if(username.equals(textInputUsername.getEditText().getText().toString())){
-                                    exist = true;
-                                    break;
-                                }
-                                exist = false;
+                                Users user = new Users(username);
+                                usersList.add(user);
                             }
+                            checkExist(usersList.size());
                             if (pDialog.isShowing())
                                 pDialog.dismiss();
+
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
-
                         }
                     }
                 },
@@ -297,20 +260,13 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
 
+
+
         // Set the tag on the request.
         jsonObjectRequest.setTag(TAG);
 
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
-    }
-
-    //WHEN BUTTON CLICK
-    public void permitCreateAcc(View view){
-        if(!validateUser() | !validatePassword() | !validateEmail()){
-            return;
-        }
-
-        regUser();
     }
 
     //INSERT DATA
@@ -398,6 +354,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -414,4 +372,42 @@ public class RegisterActivity extends AppCompatActivity {
 //        String encodedImage = android.util.Base64.encodeToString(imageBytes, android.util.Base64.DEFAULT);
 //        return encodedImage;
 //    }
+private boolean validateUser(){
+    String usernameInput = null;
+    if(textInputUsername.getEditText().getText().toString().trim() != null){
+        usernameInput = textInputUsername.getEditText().getText().toString().trim();
+    }
+
+    if(usernameInput.isEmpty()){
+        textInputUsername.setError("Username can't be empty");
+        return false;
+    }else{
+        textInputUsername.setError(null);
+        textInputUsername.setErrorEnabled(false);
+        return true;
+    }
+}
+
+
+    //WHEN BUTTON CLICK
+    public void permitCreateAcc(View view){
+        if(!validateUser() | !validatePassword() | !validateEmail()){
+            textInputPassword.getEditText().setText("");
+            textInputConfirmPassword.getEditText().setText("");
+            return;
+        }
+
+        downloadUsers(getApplicationContext(),textInputUsername.getEditText().getText().toString());
+    }
+
+    public void checkExist(int size){
+        if(size > 0){
+            textInputUsername.setError("Username ["+textInputUsername.getEditText().getText().toString()+"] already exists. Please Try With Another One.");
+        }else{
+            textInputUsername.setError(null);
+            textInputUsername.setErrorEnabled(false);
+            regUser();
+        }
+    }
+
 }

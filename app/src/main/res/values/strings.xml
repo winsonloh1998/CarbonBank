@@ -22,4 +22,14 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
 
+    <!-- Drawer Menu Item Name -->
+    <string name="home">Home</string>
+    <string name="carboncredit">Carbon Credit</string>
+    <string name="carbontax">Carbon Tax</string>
+    <string name="scanqr">Scan QR Code</string>
+    <string name="myqr">My QR Code</string>
+    <string name="nfc">NFC</string>
+    <string name="setting">Settings</string>
+    <string name="signout">Sign Out</string>
+
 </resources>

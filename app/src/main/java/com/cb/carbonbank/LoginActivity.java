@@ -159,45 +159,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void confirmInput(View view){
-        downloadUsers(getApplicationContext(),GET_URL);
         if(!validateUser() | !validatePassword()){
             return;
         }
-
-        String result;
-        boolean valid = false;
-
-        for(int i = 0;i<usersList.size();i++){
-            if(usersList.get(i).getUsername().equals(textInputUsername.getEditText().getText().toString()) &&
-                    usersList.get(i).getPassword().equals(textInputPassword.getEditText().getText().toString())){
-                valid = true;
-                break;
-            }
-        }
-
-        if(valid){
-            result = "Successfully";
-            Toast.makeText(this,result,Toast.LENGTH_SHORT).show();
-
-            //Set the user to authenticated
-            sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            boolean authen = true;
-            editor.putBoolean("authenticated",authen);
-            editor.commit();
-
-            Intent intent = new Intent(this,HomeActivity.class);
-            startActivity(intent);
-        }else{
-            result = "Invalid Username & Password";
-            Toast.makeText(this,result,Toast.LENGTH_SHORT).show();
-        }
+        downloadUsers(getApplicationContext(),textInputUsername.getEditText().getText().toString());
     }
 
 
-    public void downloadUsers(Context context, String url){
+    public void downloadUsers(Context context, String username){
         // Instantiate the RequestQueue
         queue = Volley.newRequestQueue(context);
+        String url = GET_URL + "?Username=" + username;
 
         if (!pDialog.isShowing())
             pDialog.setMessage("Validating...");
@@ -216,13 +188,8 @@ public class LoginActivity extends AppCompatActivity {
                                 String password = usersResponse.getString("Password");
                                 Users user = new Users(username,password);
                                 usersList.add(user);
-//                                if(username.equals(textInputUsername.getEditText().getText().toString()) &&
-//                                        password.equals(textInputPassword.getEditText().getText().toString())) {
-//                                    valid = true;
-//                                    break;
-//                                }
-//                                valid = false;
                             }
+                            checkValid(usersList.size());
                             if (pDialog.isShowing())
                                 pDialog.dismiss();
                         } catch (Exception e) {
@@ -246,6 +213,46 @@ public class LoginActivity extends AppCompatActivity {
 
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
+    }
+
+    public void checkValid(int size){
+        if(size > 0){
+            if(usersList.get(0).getUsername().equals(textInputUsername.getEditText().getText().toString())){
+                if(usersList.get(0).getPassword().equals(textInputPassword.getEditText().getText().toString())){
+                    //Set the user to authenticated
+                    sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    boolean authen = true;
+                    String authenticatedUser = textInputUsername.getEditText().getText().toString();
+                    editor.putString("authenticatedUser",authenticatedUser);
+                    editor.putBoolean("authenticated",authen);
+                    editor.commit();
+
+                    textInputPassword.setError(null);
+                    textInputPassword.setErrorEnabled(false);
+
+                    //Authenticated n Go To Homepage
+                    Intent intent = new Intent(this,HomeActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_up,R.anim.slide_out_down);
+
+                    //Message of Successful Login
+                    Toast.makeText(this,"Successfully",Toast.LENGTH_SHORT).show();
+                }else{
+                    textInputPassword.setError("Invalid Password");
+                    return;
+                }
+                textInputUsername.setError(null);
+                textInputUsername.setErrorEnabled(false);
+                return;
+            }else{
+                textInputUsername.setError("Invalid Username");
+                return;
+            }
+        }else{
+            Toast.makeText(this, "Account does not exists. Try to register one",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override

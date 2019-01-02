@@ -28,9 +28,8 @@ public class Users {
     }
 
     //To Insert User Personal Info
-    public Users(String username, String password, String email, String displayName, String gender, String dob, int carbonCredit, int carbonTax, String firstLogin) {
+    public Users(String username, String email, String displayName, String gender, String dob, int carbonCredit, int carbonTax, String firstLogin) {
         this.username = username;
-        this.password = password;
         this.email = email;
         this.displayName = displayName;
         this.gender = gender;
