@@ -1,16 +1,21 @@
 package com.cb.carbonbank;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.UnicodeSetSpanner;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +23,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
 import android.util.Xml;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +44,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
@@ -54,15 +61,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ProgressDialog pDialog;
     private static String GET_URL = "https://crocodilian-trade.000webhostapp.com/SelectUsers.php";
     RequestQueue queue;
+    private boolean doubleBackToExitPressedOnce = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
-        tvDrawerDisplayName = (TextView)findViewById(R.id.drawerDisplayName);
-        tvDrawerEmail = (TextView)findViewById(R.id.drawerEmail);
+        LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View headerView = inflater.inflate(R.layout.header,null);
+        tvDrawerDisplayName = (TextView)headerView.findViewById(R.id.drawerDisplayName);
+        tvDrawerEmail = (TextView)headerView.findViewById(R.id.drawerEmail);
 
         pDialog = new ProgressDialog(this);
         userList = new ArrayList<>();
@@ -71,9 +81,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
         boolean authenticated = sharedPreferences.getBoolean("authenticated",false);
         if(!authenticated){
-            finish();
             Intent intent = new Intent(this,LoginActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.disable_slide,R.anim.disable_slide);
         }
 
         final String authUser = sharedPreferences.getString("authenticatedUser","Anonymous");
@@ -84,6 +94,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mNavigationView = findViewById(R.id.navView);
+        mNavigationView.setNavigationItemSelectedListener(this);
+
     }
 
     //For the drawer toggle on left hand side to operate
@@ -97,33 +111,58 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
-        switch (id){
-            case R.id.logout:
-//                sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                boolean unauthen = false;
-//                editor.putBoolean("authenticated",unauthen);
-//                editor.commit();
-                Intent intent = new Intent(this,LoginActivity.class);
-                startActivity(intent);
-                break;
+        if(id == R.id.home){
+
+        }else if(id == R.id.cc){
+
+        }else if(id == R.id.ct){
+
+        }else if(id == R.id.scanQrCode){
+
+        }else if(id == R.id.qrCode){
+
+        }else if(id == R.id.nfc){
+
+        }else if(id == R.id.setting){
+
+        }else if(id == R.id.logout){
+            AlertDialog.Builder quitAlert = new AlertDialog.Builder(HomeActivity.this);
+            quitAlert.setMessage("Are you sure you want to sign out?").setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            boolean unauthen = false;
+                            editor.putBoolean("authenticated",unauthen);
+                            editor.commit();
+                            signOutFunction();
+                            overridePendingTransition(R.anim.slide_in_down,R.anim.slide_out_up);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            quitAlert.setIcon(R.drawable.ic_exit_to_app_black_24dp);
+
+            AlertDialog alert = quitAlert.create();
+            alert.setTitle("Sign Out");
+            alert.show();
         }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer);
+        drawer.closeDrawer(GravityCompat.START);
         return false;
     }
 
-
-
-    @Override
-    public void finish(){
-        super.finish();
-        sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        boolean unauthen = false;
-        editor.putBoolean("authenticated",unauthen);
-        editor.commit();
-        overridePendingTransition(R.anim.slide_in_down,R.anim.slide_out_up);
+    public void signOutFunction(){
+        Toast.makeText(this, "Sign Out Successfully", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this,LoginActivity.class);
+        startActivity(intent);
     }
 
     public void downloadUsers(Context context, String username){
@@ -182,16 +221,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void setInformation(int size){
         if(size > 0){
-//            if(userList.get(0).getDisplayName() != null){
-//                tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
-//            }
-//            if(userList.get(0).getEmail() != null){
-//                tvDrawerEmail.setText(userList.get(0).getEmail());
-//            }
-
+            tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
+            tvDrawerEmail.setText(userList.get(0).getEmail());
         }else{
             Intent intent = new Intent(this,LoginActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }

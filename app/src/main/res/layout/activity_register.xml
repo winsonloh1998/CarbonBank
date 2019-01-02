@@ -7,19 +7,18 @@
     tools:context=".RegisterActivity">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageViewProfilePic"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="5dp"
+        app:civ_border_color="@color/colorPrimaryDark"
+        app:civ_border_width="3dp"
         app:layout_constraintBottom_toTopOf="@+id/text_input_username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/edit_profile_pic" />
+        android:src="@drawable/edit_profile_pic">
+    </de.hdodenhof.circleimageview.CircleImageView>
 
     <Button
         android:id="@+id/btn_signUp"

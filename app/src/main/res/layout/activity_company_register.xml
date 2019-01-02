@@ -133,19 +133,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageViewCompanyProfilePic"
+        app:civ_border_color="@color/colorPrimaryDark"
+        app:civ_border_width="3dp"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/profile_pic_bg"
         app:layout_constraintBottom_toTopOf="@+id/text_input_company_reg_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/company_profile_pic" />
+        android:src="@drawable/company_profile_pic">
+    </de.hdodenhof.circleimageview.CircleImageView>
 
 </android.support.constraint.ConstraintLayout>

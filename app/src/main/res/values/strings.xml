@@ -26,6 +26,7 @@
     <string name="home">Home</string>
     <string name="carboncredit">Carbon Credit</string>
     <string name="carbontax">Carbon Tax</string>
+    <string name="reward">Reward</string>
     <string name="scanqr">Scan QR Code</string>
     <string name="myqr">My QR Code</string>
     <string name="nfc">NFC</string>
