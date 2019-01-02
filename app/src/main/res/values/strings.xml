@@ -33,4 +33,8 @@
     <string name="setting">Settings</string>
     <string name="signout">Sign Out</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="qr_code_message">Scan to earn Carbon Credit</string>
+
+
 </resources>

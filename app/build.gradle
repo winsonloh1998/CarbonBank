@@ -32,4 +32,5 @@ dependencies {
     implementation 'net.gotev:uploadservice:2.1'
 
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
 }

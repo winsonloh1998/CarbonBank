@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -122,7 +124,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }else if(id == R.id.scanQrCode){
 
         }else if(id == R.id.qrCode){
+            //1. Create a Fragment Manager
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
+            //2. Create a Fragment Transaction
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            //3. Create an instance of a fragment
+            ScanQrFragment fragment = new ScanQrFragment();
+
+            //4. Perform fragment transaction
+            fragmentTransaction.replace(R.id.fragment_container,fragment);
+
+            //5. Commit a transaction
+            fragmentTransaction.commit();
         }else if(id == R.id.nfc){
 
         }else if(id == R.id.setting){
@@ -153,6 +168,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             AlertDialog alert = quitAlert.create();
             alert.setTitle("Sign Out");
             alert.show();
+        }else{
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer);
         drawer.closeDrawer(GravityCompat.START);
@@ -231,20 +248,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
 
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce=false;
-            }
-        }, 2000);
     }
 }

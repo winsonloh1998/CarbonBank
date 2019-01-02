@@ -8,12 +8,7 @@
     android:id="@+id/drawer"
     tools:context=".HomeActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:background="@color/colorAccent"
-        android:layout_height="match_parent">
-
-    </android.support.constraint.ConstraintLayout>
+    <include layout="@layout/content_home" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navView"
@@ -23,7 +18,6 @@
         android:background="@color/colorAccent"
         app:menu="@menu/drawermenu"
         android:layout_gravity="start">
-
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
