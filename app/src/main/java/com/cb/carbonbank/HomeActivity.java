@@ -26,11 +26,14 @@ import android.text.Layout;
 import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -65,16 +68,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     RequestQueue queue;
     private boolean doubleBackToExitPressedOnce = false;
 
+//    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View headerView = inflater.inflate(R.layout.header,null);
-        tvDrawerDisplayName = (TextView)headerView.findViewById(R.id.drawerDisplayName);
-        tvDrawerEmail = (TextView)headerView.findViewById(R.id.drawerEmail);
+//        toolbar = findViewById(R.id.toolbar);
+//        //toolbar.setTitleTextColor(0xFFFFFFFF);
+//        setSupportActionBar(toolbar);
 
         pDialog = new ProgressDialog(this);
         userList = new ArrayList<>();
@@ -88,9 +91,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             overridePendingTransition(R.anim.disable_slide,R.anim.disable_slide);
         }
 
-        final String authUser = sharedPreferences.getString("authenticatedUser","Anonymous");
-        downloadUsers(getApplicationContext(),authUser);
-
         mDrawerLayout = findViewById(R.id.drawer);
         mToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -99,8 +99,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         mNavigationView = findViewById(R.id.navView);
         mNavigationView.setNavigationItemSelectedListener(this);
+        View headerView = mNavigationView.getHeaderView(0);
+        tvDrawerDisplayName = (TextView)headerView.findViewById(R.id.drawerDisplayName);
+        tvDrawerEmail = (TextView)headerView.findViewById(R.id.drawerEmail);
 
+        //Retrieve Information
+        final String authUser = sharedPreferences.getString("authenticatedUser","Anonymous");
+        downloadUsers(getApplicationContext(),authUser);
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater menuInflater = getMenuInflater();
+//        ((MenuInflater) menuInflater).inflate(R.menu.tool_bar_item,menu);
+//        return true;
+//    }
 
     //For the drawer toggle on left hand side to operate
     @Override
@@ -108,6 +121,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(mToggle.onOptionsItemSelected(item)){
             return true;
         }
+
+        int id = item.getItemId();
+
+        if (id == R.id.qr_scanner) {
+            Intent intent = new Intent(this,QrScannerActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -122,7 +143,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }else if(id == R.id.ct){
 
         }else if(id == R.id.scanQrCode){
-
+            Intent intent = new Intent(this,QrScannerActivity.class);
+            startActivity(intent);
         }else if(id == R.id.qrCode){
             //1. Create a Fragment Manager
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -238,7 +260,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void setInformation(int size){
         if(size > 0){
-            tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
+            if(userList.get(0).getDisplayName() == null || userList.get(0).getDisplayName().trim().equals("")){
+                tvDrawerDisplayName.setText("ProfileName"+(int)(Math.random() * 100000)+1);
+            }else{
+                tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
+            }
             tvDrawerEmail.setText(userList.get(0).getEmail());
         }else{
             Intent intent = new Intent(this,LoginActivity.class);
@@ -271,4 +297,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.tool_bar_item, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
 }
