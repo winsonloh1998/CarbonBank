@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.UnicodeSetSpanner;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -23,6 +25,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
@@ -44,8 +47,12 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -55,7 +62,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String prefName = "AuthenticatedUser";
     private SharedPreferences sharedPreferences;
-    private ImageView drawerProfilePic;
+    private CircleImageView drawerProfilePic;
 
     private TextView tvDrawerDisplayName;
     private TextView tvDrawerEmail;
@@ -68,52 +75,56 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     RequestQueue queue;
     private boolean doubleBackToExitPressedOnce = false;
 
-//    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-//        toolbar = findViewById(R.id.toolbar);
-//        //toolbar.setTitleTextColor(0xFFFFFFFF);
-//        setSupportActionBar(toolbar);
-
-        pDialog = new ProgressDialog(this);
-        userList = new ArrayList<>();
-
-        //Check Whether is Authenticated
         sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
         boolean authenticated = sharedPreferences.getBoolean("authenticated",false);
         if(!authenticated){
             Intent intent = new Intent(this,LoginActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.disable_slide,R.anim.disable_slide);
+        }else{
+            if (!isConnected()) {
+                Toast.makeText(getApplicationContext(), "Network Service Not Available", Toast.LENGTH_LONG).show();
+            }
+
+            pDialog = new ProgressDialog(this);
+            userList = new ArrayList<>();
+
+            //Check Whether is Authenticated
+
+
+            mDrawerLayout = findViewById(R.id.drawer);
+            mToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
+            mDrawerLayout.addDrawerListener(mToggle);
+            mToggle.syncState();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            mNavigationView = findViewById(R.id.navView);
+            mNavigationView.setNavigationItemSelectedListener(this);
+
+            View headerView = mNavigationView.getHeaderView(0);
+            tvDrawerDisplayName = (TextView)headerView.findViewById(R.id.drawerDisplayName);
+            tvDrawerEmail = (TextView)headerView.findViewById(R.id.drawerEmail);
+            drawerProfilePic = headerView.findViewById(R.id.drawerProfilePic);
+
+            //Retrieve Information
+            final String authUser = sharedPreferences.getString("authenticatedUser","Anonymous");
+            downloadUsers(getApplicationContext(),authUser);
         }
-
-        mDrawerLayout = findViewById(R.id.drawer);
-        mToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mNavigationView = findViewById(R.id.navView);
-        mNavigationView.setNavigationItemSelectedListener(this);
-        View headerView = mNavigationView.getHeaderView(0);
-        tvDrawerDisplayName = (TextView)headerView.findViewById(R.id.drawerDisplayName);
-        tvDrawerEmail = (TextView)headerView.findViewById(R.id.drawerEmail);
-
-        //Retrieve Information
-        final String authUser = sharedPreferences.getString("authenticatedUser","Anonymous");
-        downloadUsers(getApplicationContext(),authUser);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater menuInflater = getMenuInflater();
-//        ((MenuInflater) menuInflater).inflate(R.menu.tool_bar_item,menu);
-//        return true;
-//    }
+    private boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 
     //For the drawer toggle on left hand side to operate
     @Override
@@ -123,12 +134,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         int id = item.getItemId();
-
         if (id == R.id.qr_scanner) {
             Intent intent = new Intent(this,QrScannerActivity.class);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -229,12 +238,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 String dob = usersResponse.getString("DoB");
                                 int cc = Integer.parseInt(usersResponse.getString("CarbonCredit"));
                                 int ct = Integer.parseInt(usersResponse.getString("CarbonTax"));
+                                String profilePic = usersResponse.getString("ProfilePic");
                                 String firstLogin = usersResponse.getString("FirstLogin");
 
-                                Users user = new Users(username,email,displayName,gender,dob,cc,ct,firstLogin);
+                                Users user = new Users(username,email,displayName,gender,dob,cc,ct,profilePic,firstLogin);
                                 userList.add(user);
                             }
-                            setInformation(userList.size());
+                            setInformation();
                             if (pDialog.isShowing())
                                 pDialog.dismiss();
                         } catch (Exception e) {
@@ -258,19 +268,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         queue.add(jsonObjectRequest);
     }
 
-    public void setInformation(int size){
-        if(size > 0){
-            if(userList.get(0).getDisplayName() == null || userList.get(0).getDisplayName().trim().equals("")){
-                tvDrawerDisplayName.setText("ProfileName"+(int)(Math.random() * 100000)+1);
-            }else{
-                tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
-            }
-            tvDrawerEmail.setText(userList.get(0).getEmail());
+    private void setInformation(){
+        tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
+        tvDrawerEmail.setText(userList.get(0).getEmail());
+
+        if(userList.get(0).getFirstLogin().equals("F")){
+            return;
+        }
+
+
+        byte[] decodedStringImg = Base64.decode(userList.get(0).getProfilePic(),Base64.DEFAULT);
+        Bitmap myBitmap = BitmapFactory.decodeByteArray(decodedStringImg, 0, decodedStringImg.length);
+
+        if(myBitmap != null){
+            drawerProfilePic.setImageBitmap(myBitmap);
         }else{
-            Intent intent = new Intent(this,LoginActivity.class);
-            startActivity(intent);
+            drawerProfilePic.setImageResource(R.drawable.testimg);
         }
     }
+
+
+
 
     @Override
     public void onBackPressed() {
