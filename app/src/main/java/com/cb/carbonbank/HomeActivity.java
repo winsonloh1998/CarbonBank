@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.text.Layout;
 import android.util.Base64;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +68,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private TextView tvDrawerDisplayName;
     private TextView tvDrawerEmail;
+    private TextView tvAmtCarbonCredit;
 
     //Variable Get User Information
     private static final String TAG = "getUserByUsername";
@@ -74,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private static String GET_URL = "https://crocodilian-trade.000webhostapp.com/SelectUsers.php";
     RequestQueue queue;
     private boolean doubleBackToExitPressedOnce = false;
+    private String authUser;
 
 
     @Override
@@ -83,23 +87,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
         boolean authenticated = sharedPreferences.getBoolean("authenticated",false);
+
         if(!authenticated){
             Intent intent = new Intent(this,LoginActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.disable_slide,R.anim.disable_slide);
-        }else{
+        }else {
             if (!isConnected()) {
                 Toast.makeText(getApplicationContext(), "Network Service Not Available", Toast.LENGTH_LONG).show();
             }
-
+            //Retrieve Information
             pDialog = new ProgressDialog(this);
+
             userList = new ArrayList<>();
 
-            //Check Whether is Authenticated
-
-
+            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
             mDrawerLayout = findViewById(R.id.drawer);
-            mToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
+            mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
             mDrawerLayout.addDrawerListener(mToggle);
             mToggle.syncState();
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -108,13 +112,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             mNavigationView.setNavigationItemSelectedListener(this);
 
             View headerView = mNavigationView.getHeaderView(0);
-            tvDrawerDisplayName = (TextView)headerView.findViewById(R.id.drawerDisplayName);
-            tvDrawerEmail = (TextView)headerView.findViewById(R.id.drawerEmail);
+            tvDrawerDisplayName = (TextView) headerView.findViewById(R.id.drawerDisplayName);
+            tvDrawerEmail = (TextView) headerView.findViewById(R.id.drawerEmail);
             drawerProfilePic = headerView.findViewById(R.id.drawerProfilePic);
 
-            //Retrieve Information
-            final String authUser = sharedPreferences.getString("authenticatedUser","Anonymous");
-            downloadUsers(getApplicationContext(),authUser);
+            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
+
+            authUser = sharedPreferences.getString("authenticatedUser", "Anonymous");
+            downloadUsers(getApplicationContext(), authUser);
         }
     }
 
@@ -285,9 +290,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }else{
             drawerProfilePic.setImageResource(R.drawable.testimg);
         }
-    }
 
+        tvAmtCarbonCredit.setText(String.valueOf(userList.get(0).getCarbonCredit()));
 
+}
 
 
     @Override
@@ -322,4 +328,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        downloadUsers(getApplicationContext(),authUser);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        downloadUsers(getApplicationContext(),authUser);
+    }
 }

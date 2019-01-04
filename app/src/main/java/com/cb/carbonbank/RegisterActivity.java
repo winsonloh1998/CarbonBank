@@ -1,8 +1,10 @@
 package com.cb.carbonbank;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -64,12 +66,10 @@ public class RegisterActivity extends AppCompatActivity {
     private static String GET_URL = "https://crocodilian-trade.000webhostapp.com/SelectUsers.php";
     RequestQueue queue;
 
-
-//    private final int CODE_GALLERY_REQUEST = 999;
-//    private static final int IMG_REQUEST = 1;
-//    private static final int STORAGE_PERMISSION_CODE = 123;
-//    private Bitmap bitmap;
-//    private Uri filePath;
+    private final int CODE_GALLERY_REQUEST = 999;
+    private final int CODE_CAMERA_REQUEST = 998;
+    private Bitmap bitmap;
+    private Uri filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +89,31 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Network Service Not Available", Toast.LENGTH_LONG).show();
         }
 
-//        imageViewProfilePic = findViewById(R.id.imageViewProfilePic);
-//        imageViewProfilePic.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view){
-//                ActivityCompat.requestPermissions(RegisterActivity.this,
-//                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},CODE_GALLERY_REQUEST);
-//            }
-//        });
+        imageViewProfilePic = findViewById(R.id.imageViewProfilePic);
+        imageViewProfilePic.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                AlertDialog.Builder requestImgAlert = new AlertDialog.Builder(RegisterActivity.this);
+                requestImgAlert.setPositiveButton("Gallery", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(RegisterActivity.this,
+                                new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},CODE_GALLERY_REQUEST);
+                    }
+                }).setNegativeButton("Take Photo", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(RegisterActivity.this,
+                                new String[] {Manifest.permission.CAMERA},CODE_CAMERA_REQUEST);
+
+                    }
+                });
+
+                requestImgAlert.setTitle("Pick Image From");
+                AlertDialog alert = requestImgAlert.create();
+                alert.show();
+            }
+        });
     }
 
     @Override
@@ -168,47 +185,62 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if(requestCode == CODE_GALLERY_REQUEST && resultCode == RESULT_OK && data != null){
-//            filePath = data.getData();
-//            try{
-//
-//                //InputStream inputStream = getContentResolver().openInputStream(filePath);
-//                //bitmap = BitmapFactory.decodeStream(inputStream);
-//                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-//                imageViewProfilePic.setImageBitmap(bitmap);
-//            }catch (IOException e){
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //Checking the request code of our request
+        if(requestCode == CODE_GALLERY_REQUEST) {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent,"Select Image"),CODE_GALLERY_REQUEST);
+            }else{
+                Toast.makeText(getApplicationContext(),"You don't have permission to access gallery",Toast.LENGTH_LONG).show();
+            }
+            return;
+        }else if(requestCode == CODE_CAMERA_REQUEST){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent,CODE_CAMERA_REQUEST);
+            }else{
+                Toast.makeText(getApplicationContext(),"You don't have permission to access camera",Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
 
-//    private void requestStoragePermission(){
-//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-//            return;
-//
-//        //if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//        //}
-//
-//        ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case CODE_GALLERY_REQUEST:
+                if(resultCode == RESULT_OK && data != null){
+                    filePath = data.getData();
+                    try{
+                        InputStream inputStream = getContentResolver().openInputStream(filePath);
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                        imageViewProfilePic.setImageBitmap(bitmap);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case CODE_CAMERA_REQUEST:
+                if(resultCode == RESULT_OK && data != null){
+                    bitmap = (Bitmap) data.getExtras().get("data");
+                    imageViewProfilePic.setImageBitmap(bitmap);
+                }
+                break;
+        }
+    }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        //Checking the request code of our request
-//        if(requestCode == CODE_GALLERY_REQUEST) {
-//            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                Intent intent = new Intent(Intent.ACTION_PICK);
-//                intent.setType("image/*");
-//                startActivityForResult(Intent.createChooser(intent,"Select Image"),CODE_GALLERY_REQUEST);
-//            }else{
-//                Toast.makeText(getApplicationContext(),"You don't have permission to access gallery",Toast.LENGTH_LONG).show();
-//            }
-//            return;
-//        }
-//        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-//    }
+    private String imageToString(Bitmap bitmap){
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+        byte[] imageBytes = outputStream.toByteArray();
+
+        String encodedImage = android.util.Base64.encodeToString(imageBytes, android.util.Base64.DEFAULT);
+        return encodedImage;
+    }
 
     //Save User Record
     private boolean isConnected() {
@@ -276,11 +308,18 @@ public class RegisterActivity extends AppCompatActivity {
         users.setUsername(textInputUsername.getEditText().getText().toString());
         users.setPassword(textInputPassword.getEditText().getText().toString());
         users.setEmail(textInputEmail.getEditText().getText().toString());
-        users.setDisplayName(" ");
+        users.setDisplayName("ProfileName"+(int)(Math.random() * 100000)+1);
         users.setGender("O");
         users.setDob(" ");
         users.setCarbonCredit(0);
         users.setCarbonTax(0);
+
+        if(bitmap != null){
+            users.setProfilePic(imageToString(bitmap));
+        }else{
+            Bitmap noImg = BitmapFactory.decodeResource(getResources(),R.drawable.testimg);
+            users.setProfilePic(imageToString(noImg));
+        }
         users.setFirstLogin("T");
 
         try {
@@ -329,6 +368,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
+
                     params.put("Username", users.getUsername());
                     params.put("Password", users.getPassword());
                     params.put("Email", users.getEmail());
@@ -337,6 +377,7 @@ public class RegisterActivity extends AppCompatActivity {
                     params.put("DoB", users.getDob());
                     params.put("CarbonCredit", String.valueOf(users.getCarbonCredit()));
                     params.put("CarbonTax", String.valueOf(users.getCarbonTax()));
+                    params.put("ProfilePic",users.getProfilePic());
                     params.put("FirstLogin", users.getFirstLogin());
                     return params;
                 }
@@ -354,8 +395,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -364,14 +403,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-//    private String imageToString(Bitmap bitmap){
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-//        byte[] imageBytes = outputStream.toByteArray();
-//
-//        String encodedImage = android.util.Base64.encodeToString(imageBytes, android.util.Base64.DEFAULT);
-//        return encodedImage;
-//    }
 private boolean validateUser(){
     String usernameInput = null;
     if(textInputUsername.getEditText().getText().toString().trim() != null){

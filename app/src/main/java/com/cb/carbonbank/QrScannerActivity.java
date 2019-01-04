@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Camera;
 import android.net.Uri;
@@ -18,9 +19,23 @@ import android.os.Bundle;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.zxing.Result;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -28,13 +43,21 @@ import static android.Manifest.permission.CAMERA;
 
 public class QrScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
+    private static final String TAG = "updateCarbonCreditToAccount";
     private static final int REQUEST_CAMERA = 1;
+    private static final String prefName = "AuthenticatedUser";
+    private SharedPreferences sharedPreferences;
     private ZXingScannerView scannerView;
+    private String currentUser;
+    private static final int amtCCToAdd= 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scanner);
+
+        sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
+        currentUser = sharedPreferences.getString("authenticatedUser","Anonymous");
 
         scannerView = new ZXingScannerView(this);
         RelativeLayout qrLayout = (RelativeLayout) findViewById(R.id.relative_scan_take_single);
@@ -131,18 +154,26 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
         AlertDialog.Builder popUpAlert = new AlertDialog.Builder(QrScannerActivity.this);
 
         if(decodeScanQr(scanResult).equals("Carbon Credit")){
+
             popUpAlert.setMessage("Carbon Credit is Successfully Redeemed.").setCancelable(false)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                         finish();
+                        try {
+                            //TODO: Please update the URL to point to your own server
+                            makeServiceCall(getApplicationContext(), "https://crocodilian-trade.000webhostapp.com/UpdateCarbonCredit.php", currentUser,amtCCToAdd);
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Error " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        finish();
                     }
             });
             popUpAlert.setIcon(R.drawable.congrat);
 
         }else{
             popUpAlert.setMessage("Invalid QR Code.").setCancelable(false)
-                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                .setNeutralButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         scannerView.resumeCameraPreview(QrScannerActivity.this);
@@ -153,32 +184,6 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
 
         AlertDialog alert = popUpAlert.create();
         alert.show();
-
-        /* AlertDialog.Builder quitAlert = new AlertDialog.Builder(HomeActivity.this);
-            quitAlert.setMessage("Are you sure you want to sign out?").setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            boolean unauthen = false;
-                            editor.putBoolean("authenticated",unauthen);
-                            editor.commit();
-                            signOutFunction();
-                            overridePendingTransition(R.anim.slide_in_down,R.anim.slide_out_up);
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-            quitAlert.setIcon(R.drawable.ic_exit_to_app_black_24dp);
-
-            AlertDialog alert = quitAlert.create();
-            alert.setTitle("Sign Out");
-            alert.show();*/
     }
 
     private String decodeScanQr(String code){
@@ -187,5 +192,30 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
 
         decodedString = new String(decodedBytes);
         return decodedString;
+    }
+
+    public void makeServiceCall(Context context, String url, final String currentUsername, final int currentCarbonCredit) {
+        //mPostCommentResponse.requestStarted();
+        RequestQueue queue = Volley.newRequestQueue(context);
+        url = url + "?Username=" +currentUsername+"&CarbonCredit=" +currentCarbonCredit;
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
+                url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                    }
+                });
+
+        // Set the tag on the request.
+        jsonObjectRequest.setTag(TAG);
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
     }
 }

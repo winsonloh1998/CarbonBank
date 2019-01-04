@@ -9,12 +9,11 @@ public class Users {
     private String dob;
     private int carbonCredit;
     private int carbonTax;
-    //private byte[] profilePic;
+    private String profilePic;
     private String firstLogin;
 
     public Users() {
     }
-
 
     //For Checking Existing Username
     public Users(String username) {
@@ -28,7 +27,7 @@ public class Users {
     }
 
     //To Insert User Personal Info
-    public Users(String username, String email, String displayName, String gender, String dob, int carbonCredit, int carbonTax, String firstLogin) {
+    public Users(String username, String email, String displayName, String gender, String dob, int carbonCredit, int carbonTax,String profilePic ,String firstLogin) {
         this.username = username;
         this.email = email;
         this.displayName = displayName;
@@ -36,6 +35,7 @@ public class Users {
         this.dob = dob;
         this.carbonCredit = carbonCredit;
         this.carbonTax = carbonTax;
+        this.profilePic = profilePic;
         this.firstLogin = firstLogin;
     }
 
@@ -101,6 +101,14 @@ public class Users {
 
     public void setCarbonTax(int carbonTax) {
         this.carbonTax = carbonTax;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
     public String getFirstLogin() {

@@ -8,7 +8,9 @@
     android:id="@+id/drawer"
     tools:context=".HomeActivity">
 
-    <include layout="@layout/content_home" />
+    <include
+        android:id="@+id/homeContent"
+        layout="@layout/content_home" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navView"
