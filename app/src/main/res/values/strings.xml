@@ -36,5 +36,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="qr_code_message">Scan to earn Carbon Credit</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="tooltip_scanner">Start QR Scanner To Earn Carbon Credit</string>
+
+    <string name="ScannerQRCodeMsg">Focus On QR Code To Earn Carbon Credit</string>
 
 </resources>

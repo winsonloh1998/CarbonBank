@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeActivity"
+        <activity
+            android:name=".HomeActivity"
             android:theme="@style/HomepageTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,15 +31,18 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".LoginActivity" />
-
+        <activity android:name=".LoginActivity" />
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".LoginActivity" />
 
-        <activity android:name=".CompanyRegisterActivity"
-            android:parentActivityName=".RegisterActivity"/>
+        <activity
+            android:name=".CompanyRegisterActivity"
+            android:parentActivityName=".RegisterActivity" />
+
+        <activity android:name=".QrScannerActivity"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/HomepageTheme"></activity>
 
     </application>
 
