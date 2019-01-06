@@ -6,4 +6,5 @@
     <color name="colorErrorText">#e4506b</color>
     <color name="colorHintText">#FF8FCBFF</color>
     <color name="textFieldBg">#F1F9FF</color>
+    <color name="colorSecondary">#BCE0FD</color>
 </resources>

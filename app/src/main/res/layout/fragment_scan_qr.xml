@@ -8,7 +8,8 @@
     tools:context=".ScanQrFragment">
 
     <!-- A CardView that contains a TextView -->
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/qrContainer"
         android:layout_width="302dp"
         android:layout_height="303dp"

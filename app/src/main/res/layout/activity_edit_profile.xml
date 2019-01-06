@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/thisScreen"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     tools:context=".EditProfileActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="496dp"
+        android:layout_height="479dp"
         android:background="@drawable/edit_profile_header"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,7 +23,7 @@
             android:layout_width="120dp"
             android:layout_height="60dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/all_edit_field_bg"
             android:fontFamily="@font/open_sans"
             android:gravity="center"
@@ -36,7 +37,7 @@
             android:id="@+id/etDisplayName"
             android:layout_width="260dp"
             android:layout_height="60dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/all_edit_text_field_bg"
             android:padding="5dp"
@@ -174,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="67dp" />
+            app:layout_constraintGuide_begin="62dp" />
 
         <Button
             android:id="@+id/saveProfileBtn"
@@ -185,13 +186,12 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/signin_btn_bg"
             android:fontFamily="@font/open_sans"
+            android:onClick="saveProfileInfo"
             android:text="@string/saveProfile"
             android:textColor="@color/colorAccent"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:onClick="saveProfileInfo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.466"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvErrorMsg" />
 
@@ -202,8 +202,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text=""
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:fontFamily="@font/open_sans"
             android:textStyle="bold"
             android:textColor="@color/colorErrorText"
@@ -219,13 +218,14 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/testimg"
         app:civ_border_color="@color/colorPrimaryDark"
         app:civ_border_overlay="true"
         app:civ_border_width="3dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

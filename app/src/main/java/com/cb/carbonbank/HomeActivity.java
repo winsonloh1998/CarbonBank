@@ -110,7 +110,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             mToggle.syncState();
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            mNavigationView = findViewById(R.id.navView);
+            mNavigationView = (NavigationView)findViewById(R.id.navView);
             mNavigationView.setNavigationItemSelectedListener(this);
 
             View headerView = mNavigationView.getHeaderView(0);
@@ -119,6 +119,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             drawerProfilePic = headerView.findViewById(R.id.drawerProfilePic);
 
             tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
+
+            drawerProfilePic.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(HomeActivity.this,ProfilePicActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             authUser = sharedPreferences.getString("authenticatedUser", "Anonymous");
             downloadUsers(getApplicationContext(), authUser);
@@ -152,6 +160,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
+
         if(id == R.id.home){
 
         }else if(id == R.id.cc){
@@ -179,7 +188,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }else if(id == R.id.nfc){
 
         }else if(id == R.id.setting){
-
+            Intent intent = new Intent(HomeActivity.this,SettingsActivity.class);
+            startActivity(intent);
         }else if(id == R.id.logout){
             AlertDialog.Builder quitAlert = new AlertDialog.Builder(HomeActivity.this);
             quitAlert.setMessage("Are you sure you want to sign out?").setCancelable(false)
@@ -214,7 +224,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
-    public void signOutFunction(){
+    private void signOutFunction(){
         Toast.makeText(this, "Sign Out Successfully", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
@@ -280,11 +290,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
         tvDrawerEmail.setText(userList.get(0).getEmail());
 
-        if(userList.get(0).getFirstLogin().equals("F")){
-            return;
-        }
-
-
         byte[] decodedStringImg = Base64.decode(userList.get(0).getProfilePic(),Base64.DEFAULT);
         Bitmap myBitmap = BitmapFactory.decodeByteArray(decodedStringImg, 0, decodedStringImg.length);
 
@@ -294,7 +299,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             drawerProfilePic.setImageResource(R.drawable.testimg);
         }
 
-        tvAmtCarbonCredit.setText(String.valueOf(userList.get(0).getCarbonCredit()));
+        tvAmtCarbonCredit.setText(String.format("%d",userList.get(0).getCarbonCredit()));
+
+
+        if(userList.get(0).getFirstLogin().equals("F")){
+            return;
+        }
 
         if(userList.get(0).getFirstLogin().equals("T")){
             AlertDialog.Builder firstTimeAlert = new AlertDialog.Builder(HomeActivity.this);
@@ -319,7 +329,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             alert.setTitle("Sign Out");
             alert.show();
         }
-}
+    }
 
 
     @Override
@@ -354,11 +364,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        downloadUsers(getApplicationContext(),authUser);
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        downloadUsers(getApplicationContext(),authUser);
+    }
 //
 //    @Override
 //    protected void onStart() {

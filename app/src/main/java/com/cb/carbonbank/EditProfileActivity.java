@@ -12,10 +12,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,6 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView tvShowDob;
     private EditText etPhoneNo;
     private TextView tvErrorMsg;
+    private String errorMsgForAll;
 
     private static final String TAG = "EditProfileAcitivity";
     private static final String TAG_UPDATE = "UpdateProfile";
@@ -83,6 +87,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private Uri filePath;
 
+    private ConstraintLayout thisScreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +107,8 @@ public class EditProfileActivity extends AppCompatActivity {
         pDialog = new ProgressDialog(this);
         progressDialog = new ProgressDialog(this);
         userList = new ArrayList<>();
+
+        thisScreen = findViewById(R.id.thisScreen);
 
         sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
         authUser = sharedPreferences.getString("authenticatedUser", "Anonymous");
@@ -298,9 +306,32 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void saveProfileInfo(View view){
-        if(!validateDisplayName()| !validatePhoneNo() | !validatePhoneNo() | !validateDoB()){
+        if(!validateDisplayName()| !validatePhoneNo() | !validateGender() | !validateDoB()){
+            tvErrorMsg.setText("Click Here To View Error.");
+            tvErrorMsg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder errorInputAlert = new AlertDialog.Builder(EditProfileActivity.this);
+                    errorInputAlert.setMessage(errorMsgForAll).setCancelable(false)
+                            .setPositiveButton("Understood", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    tvErrorMsg.setText("");
+                                    errorMsgForAll = null;
+                                    dialog.cancel();
+                                }
+                            });
+                    errorInputAlert.setIcon(R.drawable.ic_error_blue_24dp);
+
+                    AlertDialog alert = errorInputAlert.create();
+                    alert.setTitle("Error");
+                    alert.show();
+                }
+            });
             return;
         }
+        errorMsgForAll = null;
+        tvErrorMsg.setText("");
         saveUserInformation();
     }
 
@@ -324,7 +355,8 @@ public class EditProfileActivity extends AppCompatActivity {
         if(bitmap != null){
             user.setProfilePic(imageToString(bitmap));
         }else{
-            Bitmap noImg = BitmapFactory.decodeResource(getResources(),R.drawable.testimg);
+            BitmapDrawable getCurrentImage = ((BitmapDrawable) civProfilePic.getDrawable());
+            Bitmap noImg = getCurrentImage.getBitmap();
             user.setProfilePic(imageToString(noImg));
         }
 
@@ -335,18 +367,6 @@ public class EditProfileActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-//        AlertDialog.Builder requestImgAlert = new AlertDialog.Builder(EditProfileActivity.this);
-//        requestImgAlert.setPositiveButton("Gallery", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//            }
-//        });
-//        requestImgAlert.setTitle("Pick Image From");
-//        requestImgAlert.setMessage("Username:" + user.getUsername() + "\nDisplay Name:" + user.getDisplayName()
-//                +"\nGender:"+user.getGender()+"\nDoB:"+user.getDob()+"\nPhone No:"+user.getPhoneNo());
-//        AlertDialog alert = requestImgAlert.create();
-//        alert.show();
     }
 
     public void makeServiceCall(Context context, String url, final Users users) {
@@ -364,38 +384,29 @@ public class EditProfileActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-//                            JSONObject jsonObject;
-//                            try {
-//                                jsonObject = new JSONObject(response);
-//                                int success = jsonObject.getInt("success");
-//                                String message = jsonObject.getString("message");
-//                                if (success==0) {
-//                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                                }else{
-//                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                                    finish();
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
+                            Toast.makeText(getApplicationContext(),"Your Profile Has Been Successfully Updated",Toast.LENGTH_LONG).show();
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            finish();
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), "Error. " + error.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Error:" + error.toString(), Toast.LENGTH_LONG).show();
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
                         }
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-
                     params.put("Username", users.getUsername());
                     params.put("DisplayName", users.getDisplayName());
                     params.put("Gender", users.getGender());
                     params.put("DoB", users.getDob());
-                    params.put("ProfilePic",users.getProfilePic());
                     params.put("PhoneNo",users.getPhoneNo());
+                    params.put("ProfilePic",users.getProfilePic());
                     return params;
                 }
 
@@ -409,6 +420,8 @@ public class EditProfileActivity extends AppCompatActivity {
             queue.add(postRequest);
         } catch (Exception e) {
             e.printStackTrace();
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
         }
     }
 
@@ -491,10 +504,13 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         if(displayNameInput.isEmpty()){
-            tvErrorMsg.setText("Display name can't be empty");
+            if(errorMsgForAll != null){
+                errorMsgForAll = errorMsgForAll + "\nDisplay name can't be empty";
+            }else{
+                errorMsgForAll = "Display name can't be empty";
+            }
             return false;
         }else{
-            tvErrorMsg.setText("");
             return true;
         }
     }
@@ -506,20 +522,31 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         if(phoneNoInput.isEmpty()){
-            tvErrorMsg.setText("Phone number can't be empty");
+            if(errorMsgForAll != null){
+                errorMsgForAll = errorMsgForAll + "\nPhone number can't be empty";
+            }else{
+                errorMsgForAll = "Phone number can't be empty";
+            }
             return false;
         }else{
             if(phoneNoInput.length() >= 10 && phoneNoInput.length() <= 11){
-                for(int i=0;i<phoneNoInput.length();i++){
-                    if(!Character.isDigit(phoneNoInput.charAt(i))){
-                        tvErrorMsg.setText("Phone number must contain digit only");
+                for(int i=0;i<phoneNoInput.length();i++) {
+                    if (!Character.isDigit(phoneNoInput.charAt(i))) {
+                        if (errorMsgForAll != null) {
+                            errorMsgForAll = errorMsgForAll + "\nPhone number must contain digit only";
+                        } else {
+                            errorMsgForAll = "Phone number must contain digit only";
+                        }
                         return false;
                     }
                 }
-                tvErrorMsg.setText("");
                 return true;
             }else{
-                tvErrorMsg.setText("Length of phone number must be between 11 or 12 included '-'.");
+                if(errorMsgForAll != null){
+                    errorMsgForAll = errorMsgForAll + "\nLength of phone number must be between 10 or 11";
+                }else{
+                    errorMsgForAll = "Length of phone number must be between 10 or 11";
+                }
                 return false;
             }
         }
@@ -528,10 +555,13 @@ public class EditProfileActivity extends AppCompatActivity {
     private boolean validateGender(){
         int gender = choiceGender.getCheckedRadioButtonId();
         if(gender == R.id.rbMale || gender == R.id.rbFemale || gender == R.id.rbOther){
-            tvErrorMsg.setText("");
             return true;
         }else{
-            tvErrorMsg.setText("Please select one of the gender.");
+            if(errorMsgForAll != null){
+                errorMsgForAll = errorMsgForAll + "\nPlease select one of the gender.";
+            }else{
+                errorMsgForAll = "Please select one of the gender.";
+            }
             return false;
         }
     }
@@ -543,10 +573,13 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         if(dobInput.isEmpty()){
-            tvErrorMsg.setText("Date of Birth can't be empty");
+            if(errorMsgForAll != null){
+                errorMsgForAll = errorMsgForAll + "\nDate of Birth can't be empty";
+            }else{
+                errorMsgForAll = "Date of Birth can't be empty";
+            }
             return false;
         }else{
-            tvErrorMsg.setText("");
             return true;
         }
     }

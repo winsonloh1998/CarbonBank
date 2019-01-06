@@ -10,7 +10,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:background="@drawable/profile_act_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -19,10 +19,10 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileActivityPic"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/testimg"
             app:civ_border_color="@color/colorAccent"
@@ -36,20 +36,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:textSize="16sp"
             android:textColor="@color/colorAccent"
             android:fontFamily="@font/open_sans"
             android:textStyle="bold"
-            android:text="Display Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileActivityPic" />
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardView"
         android:layout_width="300dp"
         android:layout_height="90dp"
@@ -106,7 +106,6 @@
                 android:layout_columnWeight="1"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/open_sans"
-                android:text="1201"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
@@ -120,7 +119,6 @@
                 android:layout_columnWeight="2"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/open_sans"
-                android:text="RM1000"
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
@@ -134,7 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="386dp" />
+        app:layout_constraintGuide_begin="320dp" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -192,9 +190,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="85dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="36dp"
             android:fontFamily="@font/open_sans"
-            android:text="TextView"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp"
             android:textStyle="italic" />
@@ -206,9 +203,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="85dp"
-            android:layout_marginTop="85dp"
+            android:layout_marginTop="86dp"
             android:fontFamily="@font/open_sans"
-            android:text="TextView"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp"
             android:textStyle="italic" />
@@ -220,9 +216,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="85dp"
-            android:layout_marginTop="135dp"
+            android:layout_marginTop="136dp"
             android:fontFamily="@font/open_sans"
-            android:text="TextView"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp"
             android:textStyle="italic" />
@@ -234,9 +229,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="85dp"
-            android:layout_marginTop="185dp"
+            android:layout_marginTop="186dp"
             android:fontFamily="@font/open_sans"
-            android:text="TextView"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp"
             android:textStyle="italic" />
@@ -244,6 +238,7 @@
 
 
     <Button
+        android:id="@+id/editBtn"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -251,11 +246,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:drawableStart="@drawable/ic_edit_blue_24dp"
         android:fontFamily="@font/open_sans"
         android:text="@string/editProfileText"
         android:textColor="@color/colorAccent"
-        android:drawableEnd="@drawable/ic_edit_blue_24dp"
         android:background="@drawable/signin_btn_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

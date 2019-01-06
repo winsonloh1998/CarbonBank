@@ -151,10 +151,10 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
     public void handleResult(Result result) {
         final String scanResult = result.getText();
 
-        AlertDialog.Builder popUpAlert = new AlertDialog.Builder(QrScannerActivity.this);
+
 
         if(decodeScanQr(scanResult).equals("Carbon Credit")){
-
+            AlertDialog.Builder popUpAlert = new AlertDialog.Builder(QrScannerActivity.this);
             popUpAlert.setMessage("Carbon Credit is Successfully Redeemed.").setCancelable(false)
                 .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
@@ -170,20 +170,24 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
                     }
             });
             popUpAlert.setIcon(R.drawable.congrat);
+            AlertDialog alert = popUpAlert.create();
+            alert.show();
 
         }else{
+            AlertDialog.Builder popUpAlert = new AlertDialog.Builder(QrScannerActivity.this);
             popUpAlert.setMessage("Invalid QR Code.").setCancelable(false)
-                .setNeutralButton("Okay", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         scannerView.resumeCameraPreview(QrScannerActivity.this);
                     }
                 });
             popUpAlert.setIcon(R.drawable.not_congrat);
+            AlertDialog alert = popUpAlert.create();
+            alert.show();
         }
 
-        AlertDialog alert = popUpAlert.create();
-        alert.show();
+
     }
 
     private String decodeScanQr(String code){

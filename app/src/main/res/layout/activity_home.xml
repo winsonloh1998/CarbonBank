@@ -10,9 +10,7 @@
     android:id="@+id/drawer">
 
     <include
-        android:id="@+id/homeContent"
-        layout="@layout/content_home" />
-
+        layout="@layout/content_home"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navView"

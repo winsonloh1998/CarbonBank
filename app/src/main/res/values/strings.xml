@@ -1,6 +1,6 @@
 <resources>
     <!-- Login Activity -->
-    <string name="app_name">CarbonBank</string>
+    <string name="app_name">Carbon Bank</string>
     <string name="text_username">Username</string>
     <string name="text_password">Password</string>
     <string name="btn_sign_in">Sign In</string>
@@ -33,10 +33,9 @@
     <string name="setting">Settings</string>
     <string name="signout">Sign Out</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="qr_code_message">Scan to earn Carbon Credit</string>
+    <string name="qr_code_title">QR Scanner</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="tooltip_scanner">Start QR Scanner To Earn Carbon Credit</string>
@@ -55,5 +54,8 @@
     <string name="phoneNo">Phone Number</string>
     <string name="saveProfile">Save Profile</string>
     <string name="editProfileText">Edit Profile</string>
+
+    <string name="securityText">Security</string>
+    <string name="themeText">Theme</string>
 
 </resources>

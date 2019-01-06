@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorAccent"
+    tools:context=".SettingsActivity">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:columnCount="1"
+        android:rowCount="4">
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="5dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/themePress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/setting_choice_bg">
+
+
+                <ImageView
+                    android:id="@+id/imageViewTheme"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:srcCompat="@drawable/ic_brightness_6_blue_24dp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/switchChangeTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="40dp"
+                    android:fontFamily="@font/open_sans"
+                    android:shadowColor="@color/colorPrimary"
+                    android:switchPadding="150dp"
+                    android:text="@string/themeText"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp"
+                    android:theme="@style/SwitchTheme"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toEndOf="@+id/imageViewTheme"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_rowWeight="2"
+            android:layout_columnWeight="1"
+            android:layout_margin="5dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/securityPress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/setting_choice_bg">
+
+                <TextView
+                    android:id="@+id/textViewSecurity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/open_sans"
+                    android:text="@string/securityText"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toEndOf="@+id/imageViewSecurity"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintVertical_bias="0.352" />
+
+                <ImageView
+                    android:id="@+id/imageViewSecurity"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:srcCompat="@drawable/ic_security_blue_24dp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_rowWeight="3"
+            android:layout_columnWeight="1"
+            android:layout_margin="5dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/signOutPress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/setting_choice_bg">
+
+
+                <TextView
+                    android:id="@+id/textViewSignOut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/open_sans"
+                    android:text="@string/signout"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toEndOf="@+id/imageViewSignOut"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintVertical_bias="0.352" />
+
+                <ImageView
+                    android:id="@+id/imageViewSignOut"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:srcCompat="@drawable/ic_exit_to_app_blue_24dp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+    </GridLayout>
+
+</LinearLayout>
