@@ -25,6 +25,7 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+
     <style name="TextInputLayoutAppearance" parent="Widget.Design.TextInputLayout">
         <!-- Design my text input layout -->
         <item name="hintTextAppearance">@style/HintText</item>
@@ -40,6 +41,29 @@
 
         <!-- colorControlHighlight is -->
         <item name="colorControlHighlight">#FF4FB000</item>
+    </style>
+
+
+    <style name="HintTextEP" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextInputLayoutAppearanceDN" parent="Widget.Design.TextInputLayout">
+        <!-- Design my text input layout -->
+        <item name="hintTextAppearance">@style/HintTextEP</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/colorAccent</item>
+
+        <!-- colorControlNormal is the underline color -->
+        <item name="colorControlNormal">@android:color/white</item>
+
+        <!-- colorControlActivated is the color when focused-->
+        <item name="colorControlActivated">@color/colorAccent</item>
+
+        <!-- colorControlHighlight is -->
+        <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
 

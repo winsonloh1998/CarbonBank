@@ -21,6 +21,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -244,9 +246,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 int cc = Integer.parseInt(usersResponse.getString("CarbonCredit"));
                                 int ct = Integer.parseInt(usersResponse.getString("CarbonTax"));
                                 String profilePic = usersResponse.getString("ProfilePic");
+                                String phoneNo = usersResponse.getString("PhoneNo");
                                 String firstLogin = usersResponse.getString("FirstLogin");
 
-                                Users user = new Users(username,email,displayName,gender,dob,cc,ct,profilePic,firstLogin);
+                                Users user = new Users(username,email,displayName,gender,dob,cc,ct,profilePic,phoneNo,firstLogin);
                                 userList.add(user);
                             }
                             setInformation();
@@ -293,6 +296,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         tvAmtCarbonCredit.setText(String.valueOf(userList.get(0).getCarbonCredit()));
 
+        if(userList.get(0).getFirstLogin().equals("T")){
+            AlertDialog.Builder firstTimeAlert = new AlertDialog.Builder(HomeActivity.this);
+            firstTimeAlert.setMessage("Welcome new user, I would like to know more about you! Fill in your personal detail " +
+                    "to receive free 1000 Carbon Credit.").setCancelable(false)
+                    .setPositiveButton("Take Me There", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(),EditProfileActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("May Be Next Time", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            firstTimeAlert.setIcon(R.drawable.ic_mood_black_24dp);
+
+            AlertDialog alert = firstTimeAlert.create();
+            alert.setTitle("Sign Out");
+            alert.show();
+        }
 }
 
 
@@ -328,15 +354,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        downloadUsers(getApplicationContext(),authUser);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        downloadUsers(getApplicationContext(),authUser);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        downloadUsers(getApplicationContext(),authUser);
+//    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        downloadUsers(getApplicationContext(),authUser);
+//    }
 }

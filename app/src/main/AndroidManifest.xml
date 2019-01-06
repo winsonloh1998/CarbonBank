@@ -40,9 +40,19 @@
             android:parentActivityName=".RegisterActivity" />
         <activity
             android:name=".QrScannerActivity"
-            android:parentActivityName=".LoginActivity"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/HomepageTheme" />
-        <activity android:name=".EditProfileActivity"></activity>
+        <activity
+            android:name=".EditProfileActivity"
+            android:label="@string/editProfileTitle"
+            android:parentActivityName=".ProfilePicActivity"
+            android:theme="@style/HomepageTheme" />
+
+        <activity android:name=".ProfilePicActivity"
+            android:label="@string/editProfileTitle"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/HomepageTheme" />
+        />
     </application>
 
 </manifest>

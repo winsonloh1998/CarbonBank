@@ -10,6 +10,7 @@ public class Users {
     private int carbonCredit;
     private int carbonTax;
     private String profilePic;
+    private String phoneNo;
     private String firstLogin;
 
     public Users() {
@@ -27,7 +28,7 @@ public class Users {
     }
 
     //To Insert User Personal Info
-    public Users(String username, String email, String displayName, String gender, String dob, int carbonCredit, int carbonTax,String profilePic ,String firstLogin) {
+    public Users(String username, String email, String displayName, String gender, String dob, int carbonCredit, int carbonTax,String profilePic,String phoneNo,String firstLogin) {
         this.username = username;
         this.email = email;
         this.displayName = displayName;
@@ -36,7 +37,16 @@ public class Users {
         this.carbonCredit = carbonCredit;
         this.carbonTax = carbonTax;
         this.profilePic = profilePic;
+        this.phoneNo = phoneNo;
         this.firstLogin = firstLogin;
+    }
+
+    public Users(String displayName, String gender, String dob, String profilePic, String phoneNo) {
+        this.displayName = displayName;
+        this.gender = gender;
+        this.dob = dob;
+        this.profilePic = profilePic;
+        this.phoneNo = phoneNo;
     }
 
     public String getUsername() {
@@ -109,6 +119,14 @@ public class Users {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
     }
 
     public String getFirstLogin() {

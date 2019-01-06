@@ -311,6 +311,7 @@ public class RegisterActivity extends AppCompatActivity {
         users.setDisplayName("ProfileName"+(int)(Math.random() * 100000)+1);
         users.setGender("O");
         users.setDob(" ");
+        users.setPhoneNo("");
         users.setCarbonCredit(0);
         users.setCarbonTax(0);
 
@@ -378,6 +379,7 @@ public class RegisterActivity extends AppCompatActivity {
                     params.put("CarbonCredit", String.valueOf(users.getCarbonCredit()));
                     params.put("CarbonTax", String.valueOf(users.getCarbonTax()));
                     params.put("ProfilePic",users.getProfilePic());
+                    params.put("PhoneNo",users.getPhoneNo());
                     params.put("FirstLogin", users.getFirstLogin());
                     return params;
                 }
@@ -423,8 +425,6 @@ private boolean validateUser(){
     //WHEN BUTTON CLICK
     public void permitCreateAcc(View view){
         if(!validateUser() | !validatePassword() | !validateEmail()){
-            textInputPassword.getEditText().setText("");
-            textInputConfirmPassword.getEditText().setText("");
             return;
         }
 

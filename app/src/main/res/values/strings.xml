@@ -43,4 +43,17 @@
 
     <string name="ScannerQRCodeMsg">Focus On QR Code To Earn Carbon Credit</string>
 
+    <string name="editProfileTitle">Personal Detail</string>
+    <string name="editProfileDescription">Press Blue Label Button To Start Editing.</string>
+
+    <string name="text_displayName">Display Name</string>
+    <string name="choice_gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Others</string>
+    <string name="dob">Date of Birth</string>
+    <string name="phoneNo">Phone Number</string>
+    <string name="saveProfile">Save Profile</string>
+    <string name="editProfileText">Edit Profile</string>
+
 </resources>
