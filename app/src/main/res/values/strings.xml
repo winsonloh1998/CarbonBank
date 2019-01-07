@@ -61,4 +61,8 @@
 
     <string name="nfcDesc">Place your back of your device against the NFC card reader.</string>
 
+
+    <string name="cc_description">Current Balance \n View details for trade history</string>
+    <string name="ct_descriptoin">Current Payable Taxes \n View details for taxes history</string>
+
 </resources>

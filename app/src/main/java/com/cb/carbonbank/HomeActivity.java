@@ -15,11 +15,14 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,6 +38,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,11 +71,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String prefName = "AuthenticatedUser";
     private SharedPreferences sharedPreferences;
+    private static final String getCCPref = "getCC";
     private CircleImageView drawerProfilePic;
 
     private TextView tvDrawerDisplayName;
     private TextView tvDrawerEmail;
-    private TextView tvAmtCarbonCredit;
 
     //Variable Get User Information
     private static final String TAG = "getUserByUsername";
@@ -82,6 +87,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String authUser;
 
     private int countAlert = 0;
+
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+    private Button btnView;
+    private TextView content;
+
+    public static int cc=0;
+    public static int ct=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +117,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             pDialog = new ProgressDialog(this);
             userList = new ArrayList<>();
 
-//            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
             mDrawerLayout = findViewById(R.id.drawer);
             mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
             mDrawerLayout.addDrawerListener(mToggle);
@@ -118,8 +131,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             tvDrawerEmail = (TextView) headerView.findViewById(R.id.drawerEmail);
             drawerProfilePic = headerView.findViewById(R.id.drawerProfilePic);
 
-//            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
-
             drawerProfilePic.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -130,7 +141,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             authUser = sharedPreferences.getString("authenticatedUser", "Anonymous");
             downloadUsers(getApplicationContext(), authUser);
+
+
         }
+
+
+
     }
 
     private boolean isConnected() {
@@ -266,14 +282,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 String displayName = usersResponse.getString("DisplayName");
                                 String gender = usersResponse.getString("Gender");
                                 String dob = usersResponse.getString("DoB");
-                                int cc = Integer.parseInt(usersResponse.getString("CarbonCredit"));
-                                int ct = Integer.parseInt(usersResponse.getString("CarbonTax"));
+                                cc = Integer.parseInt(usersResponse.getString("CarbonCredit"));
+                                ct = Integer.parseInt(usersResponse.getString("CarbonTax"));
                                 String profilePic = usersResponse.getString("ProfilePic");
                                 String phoneNo = usersResponse.getString("PhoneNo");
                                 String firstLogin = usersResponse.getString("FirstLogin");
 
                                 Users user = new Users(username,email,displayName,gender,dob,cc,ct,profilePic,phoneNo,firstLogin);
                                 userList.add(user);
+
                             }
                             setInformation();
                             if (pDialog.isShowing())
@@ -301,6 +318,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void setInformation(){
         if(userList.size() > 0){
+            mSectionsPagerAdapter=new SectionsPagerAdapter(getSupportFragmentManager());
+            mViewPager = (ViewPager) findViewById(R.id.container);
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            btnView=findViewById(R.id.viewDetails);
             tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
             tvDrawerEmail.setText(userList.get(0).getEmail());
 
@@ -313,7 +334,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 drawerProfilePic.setImageResource(R.drawable.testimg);
             }
 
-//            tvAmtCarbonCredit.setText(String.format("%d",userList.get(0).getCarbonCredit()));
+            //tvAmtCarbonCredit.setText(String.format("%d",userList.get(0).getCarbonCredit()));
+
+            sharedPreferences = getSharedPreferences(getCCPref,MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            int valueCC = userList.get(0).getCarbonCredit();
+            editor.putInt("ccValue",valueCC);
+            editor.commit();
 
             if(userList.get(0).getFirstLogin().equals("F")){
                 return;
@@ -390,11 +417,98 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        downloadUsers(getApplicationContext(),authUser);
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 2;
+        }
     }
+
+
+
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.home_viewpage, null);
+            //Textview and image view from fragment.xml
+            TextView titleTv=(TextView)rootView.findViewById(R.id.titleTv) ;
+            TextView content=(TextView)rootView.findViewById(R.id.content);
+            TextView description=(TextView)rootView.findViewById(R.id.description);
+            Button viewDetails=(Button)rootView.findViewById(R.id.viewDetails);
+            SharedPreferences sharedPreferences;
+
+
+
+            if(getArguments().getInt(ARG_SECTION_NUMBER)==1) {
+                titleTv.setText(R.string.carboncredit);
+                content.setText(cc+" cc");
+                description.setText(R.string.cc_description);
+                viewDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(getActivity(),ProfilePicActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+            else if(getArguments().getInt(ARG_SECTION_NUMBER)==2){
+                titleTv.setText(R.string.carbontax);
+                content.setText(String.format("RM %d",ct));
+                description.setText(R.string.ct_descriptoin);
+                viewDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent=new Intent(getActivity(),ProfilePicActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            return rootView;
+        }
+    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        downloadUsers(getApplicationContext(),authUser);
+//    }
 //
 //    @Override
 //    protected void onStart() {
