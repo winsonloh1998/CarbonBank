@@ -310,7 +310,7 @@ public class RegisterActivity extends AppCompatActivity {
         users.setEmail(textInputEmail.getEditText().getText().toString());
         users.setDisplayName("ProfileName"+(int)(Math.random() * 100000)+1);
         users.setGender("O");
-        users.setDob(" ");
+        users.setDob("");
         users.setPhoneNo("");
         users.setCarbonCredit(0);
         users.setCarbonTax(0);
@@ -369,7 +369,6 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-
                     params.put("Username", users.getUsername());
                     params.put("Password", users.getPassword());
                     params.put("Email", users.getEmail());

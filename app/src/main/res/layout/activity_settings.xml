@@ -62,11 +62,55 @@
 
         </android.support.v7.widget.CardView>
 
-
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_rowWeight="2"
+            android:layout_columnWeight="1"
+            android:layout_margin="5dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/companyPress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/setting_choice_bg">
+
+                <TextView
+                    android:id="@+id/textViewCompany"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/open_sans"
+                    android:text="@string/companyText"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toEndOf="@+id/imageViewCompany"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintVertical_bias="0.35000002" />
+
+                <ImageView
+                    android:id="@+id/imageViewCompany"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:srcCompat="@drawable/company_setting_icon"
+                    card_view:layout_constraintBottom_toBottomOf="parent"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_rowWeight="3"
             android:layout_columnWeight="1"
             android:layout_margin="5dp">
 
@@ -111,7 +155,7 @@
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_rowWeight="3"
+            android:layout_rowWeight="4"
             android:layout_columnWeight="1"
             android:layout_margin="5dp">
 

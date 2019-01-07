@@ -1,17 +1,22 @@
 package com.cb.carbonbank;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Camera;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.health.PackageHealthStats;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationBuilderWithBuilderAccessor;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +55,7 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
     private ZXingScannerView scannerView;
     private String currentUser;
     private static final int amtCCToAdd= 3;
+    long vibrateDuration = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +178,7 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
             popUpAlert.setIcon(R.drawable.congrat);
             AlertDialog alert = popUpAlert.create();
             alert.show();
-
+            notifcationCall();
         }else{
             AlertDialog.Builder popUpAlert = new AlertDialog.Builder(QrScannerActivity.this);
             popUpAlert.setMessage("Invalid QR Code.").setCancelable(false)
@@ -186,8 +192,20 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
             AlertDialog alert = popUpAlert.create();
             alert.show();
         }
+    }
 
+    private void notifcationCall(){
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Carbon Bank Notification")
+                .setVibrate(new long[]{1000,1000,1000,1000,1000}) //VIBRATION
+                .setLights(Color.BLUE,3000,3000) //LED LIGHT
+                .setColor(getResources().getColor(R.color.colorPrimary))
+                .setContentText("Congratulations, you have just received 3 carbon credit by using qr scanner.");
 
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1,notificationBuilder.build());
     }
 
     private String decodeScanQr(String code){

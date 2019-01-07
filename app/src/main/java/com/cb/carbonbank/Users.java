@@ -41,12 +41,13 @@ public class Users {
         this.firstLogin = firstLogin;
     }
 
-    public Users(String displayName, String gender, String dob, String profilePic, String phoneNo) {
+    public Users(String displayName, String gender, String dob, String profilePic, String phoneNo,String firstLogin) {
         this.displayName = displayName;
         this.gender = gender;
         this.dob = dob;
         this.profilePic = profilePic;
         this.phoneNo = phoneNo;
+        this.firstLogin = firstLogin;
     }
 
     public String getUsername() {

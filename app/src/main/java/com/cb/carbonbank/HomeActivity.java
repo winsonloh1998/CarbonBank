@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private boolean doubleBackToExitPressedOnce = false;
     private String authUser;
 
+    private int countAlert = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +101,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
             //Retrieve Information
             pDialog = new ProgressDialog(this);
-
             userList = new ArrayList<>();
 
-            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
+//            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
             mDrawerLayout = findViewById(R.id.drawer);
             mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
             mDrawerLayout.addDrawerListener(mToggle);
@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             tvDrawerEmail = (TextView) headerView.findViewById(R.id.drawerEmail);
             drawerProfilePic = headerView.findViewById(R.id.drawerProfilePic);
 
-            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
+//            tvAmtCarbonCredit = findViewById(R.id.amtCarbonCredit);
 
             drawerProfilePic.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -186,7 +186,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             //5. Commit a transaction
             fragmentTransaction.commit();
         }else if(id == R.id.nfc){
+            //1. Create a Fragment Manager
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
+            //2. Create a Fragment Transaction
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            //3. Create an instance of a fragment
+            NFCFragment fragment = new NFCFragment();
+
+            //4. Perform fragment transaction
+            fragmentTransaction.replace(R.id.fragment_container,fragment);
+
+            //5. Commit a transaction
+            fragmentTransaction.commit();
         }else if(id == R.id.setting){
             Intent intent = new Intent(HomeActivity.this,SettingsActivity.class);
             startActivity(intent);
@@ -287,47 +300,60 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setInformation(){
-        tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
-        tvDrawerEmail.setText(userList.get(0).getEmail());
+        if(userList.size() > 0){
+            tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
+            tvDrawerEmail.setText(userList.get(0).getEmail());
 
-        byte[] decodedStringImg = Base64.decode(userList.get(0).getProfilePic(),Base64.DEFAULT);
-        Bitmap myBitmap = BitmapFactory.decodeByteArray(decodedStringImg, 0, decodedStringImg.length);
+            byte[] decodedStringImg = Base64.decode(userList.get(0).getProfilePic(),Base64.DEFAULT);
+            Bitmap myBitmap = BitmapFactory.decodeByteArray(decodedStringImg, 0, decodedStringImg.length);
 
-        if(myBitmap != null){
-            drawerProfilePic.setImageBitmap(myBitmap);
+            if(myBitmap != null){
+                drawerProfilePic.setImageBitmap(myBitmap);
+            }else{
+                drawerProfilePic.setImageResource(R.drawable.testimg);
+            }
+
+//            tvAmtCarbonCredit.setText(String.format("%d",userList.get(0).getCarbonCredit()));
+
+            if(userList.get(0).getFirstLogin().equals("F")){
+                return;
+            }
+
+            if(userList.get(0).getFirstLogin().equals("T")){
+                if(countAlert == 0){
+                    AlertDialog.Builder firstTimeAlert = new AlertDialog.Builder(HomeActivity.this);
+                    firstTimeAlert.setMessage("Welcome new user, I would like to know more about you! Fill in your personal detail " +
+                            "to receive free 1000 Carbon Credit.").setCancelable(false)
+                            .setPositiveButton("Take Me There", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(getApplicationContext(),EditProfileActivity.class);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setNegativeButton("May Be Next Time", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    firstTimeAlert.setIcon(R.drawable.ic_mood_black_24dp);
+
+                    countAlert++;
+                    AlertDialog alert = firstTimeAlert.create();
+                    alert.setTitle("Sign Out");
+                    alert.show();
+                }
+            }
         }else{
-            drawerProfilePic.setImageResource(R.drawable.testimg);
-        }
+            sharedPreferences = getSharedPreferences(prefName,MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            boolean unauthen = false;
+            editor.putBoolean("authenticated",unauthen);
+            editor.commit();
 
-        tvAmtCarbonCredit.setText(String.format("%d",userList.get(0).getCarbonCredit()));
-
-
-        if(userList.get(0).getFirstLogin().equals("F")){
-            return;
-        }
-
-        if(userList.get(0).getFirstLogin().equals("T")){
-            AlertDialog.Builder firstTimeAlert = new AlertDialog.Builder(HomeActivity.this);
-            firstTimeAlert.setMessage("Welcome new user, I would like to know more about you! Fill in your personal detail " +
-                    "to receive free 1000 Carbon Credit.").setCancelable(false)
-                    .setPositiveButton("Take Me There", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getApplicationContext(),EditProfileActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton("May Be Next Time", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-            firstTimeAlert.setIcon(R.drawable.ic_mood_black_24dp);
-
-            AlertDialog alert = firstTimeAlert.create();
-            alert.setTitle("Sign Out");
-            alert.show();
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivity(intent);
         }
     }
 

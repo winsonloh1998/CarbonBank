@@ -252,7 +252,6 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "Account does not exists. Try to register one",Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override

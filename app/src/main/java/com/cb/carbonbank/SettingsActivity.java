@@ -23,6 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
     private ConstraintLayout signOutPress;
     private ConstraintLayout securityPress;
     private ConstraintLayout themePress;
+    private ConstraintLayout companyPress;
 
     private Switch themeSwitch;
 
@@ -67,6 +68,22 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        companyPress = findViewById(R.id.companyPress);
+        final GradientDrawable companyPressBackground = (GradientDrawable) companyPress.getBackground();
+        companyPress.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    companyPressBackground.setStroke(strokeSize, getResources().getColor(R.color.colorPrimary));
+                    companyPressBackground.setColor(getResources().getColor(R.color.textFieldBg));
+                }else{
+                    companyPressBackground.setStroke(0, getResources().getColor(R.color.colorPrimary));
+                    companyPressBackground.setColor(getResources().getColor(R.color.colorAccent));
+                }
+                return false;
+            }
+        });
+
         securityPress = findViewById(R.id.securityPress);
         final GradientDrawable securityPressBackground = (GradientDrawable) securityPress.getBackground();
         securityPress.setOnTouchListener(new View.OnTouchListener() {
@@ -101,6 +118,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         //TODO: PUT COMPANY ACCESS HERE
         themePress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO:SWITCH
+            }
+        });
+
+        companyPress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO:SWITCH

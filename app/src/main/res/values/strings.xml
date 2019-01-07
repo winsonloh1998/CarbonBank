@@ -57,5 +57,8 @@
 
     <string name="securityText">Security</string>
     <string name="themeText">Theme</string>
+    <string name="companyText">Manage Company</string>
+
+    <string name="nfcDesc">Place your back of your device against the NFC card reader.</string>
 
 </resources>

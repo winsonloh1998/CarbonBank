@@ -15,7 +15,7 @@
             <item android:id="@+id/qrCode" android:title="@string/myqr" android:icon="@drawable/myqrcodepic"/>
             <item android:id="@+id/nfc" android:title="@string/nfc" android:icon="@drawable/nfcpic"/>
         </group>
-
+w
         <group android:id="@+id/lowerPart">
             <item android:id="@+id/setting" android:title="@string/setting" android:icon="@drawable/ic_settings_black_24dp"/>
             <item android:id="@+id/logout" android:title="@string/signout" android:icon="@drawable/ic_exit_to_app_black_24dp"/>

@@ -3,6 +3,9 @@ package com.cb.carbonbank;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -50,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,11 +72,12 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText etPhoneNo;
     private TextView tvErrorMsg;
     private String errorMsgForAll;
+    private TextView usedToStoreFirstLogin;
 
     private static final String TAG = "EditProfileAcitivity";
     private static final String TAG_UPDATE = "UpdateProfile";
-    private DatePickerDialog.OnDateSetListener mDateSetListener;
-
+//    private DatePickerDialog.OnDateSetListener mDateSetListener;
+//
     private static final String prefName = "AuthenticatedUser";
     private SharedPreferences sharedPreferences;
     private String authUser;
@@ -103,6 +109,7 @@ public class EditProfileActivity extends AppCompatActivity {
         tvShowDob = (TextView) findViewById(R.id.tvShowDoB);
         etPhoneNo = findViewById(R.id.etPhoneNo);
         tvErrorMsg = findViewById(R.id.tvErrorMsg);
+        usedToStoreFirstLogin = findViewById(R.id.usedToStoreFirstLogin);
 
         pDialog = new ProgressDialog(this);
         progressDialog = new ProgressDialog(this);
@@ -149,25 +156,17 @@ public class EditProfileActivity extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        EditProfileActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
-                        year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        EditProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        month = month+1;
+                        String date = dayOfMonth + " - " + getMonthInWord(month) + " - " + year;
+                        tvShowDob.setText(date);
+                    }
+                }, year,month,day);
                 dialog.show();
             }
         });
-
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                month = month + 1;
-                Log.d(TAG,"onDataSet: date" + dayOfMonth +"/"+month+"/"+year);
-
-                String date =  dayOfMonth +" - "+getMonthInWord(month)+" - "+year;
-                tvShowDob.setText(date);
-            }
-        };
 
         etDisplayName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -175,7 +174,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 String tempString = etDisplayName.getText().toString();
                 if(!hasFocus){
                     etDisplayName.setText(etDisplayName.getText().toString());
-
                 }else{
                     etDisplayName.setText("");
                 }
@@ -277,8 +275,9 @@ public class EditProfileActivity extends AppCompatActivity {
                                 String dob = usersResponse.getString("DoB");
                                 String profilePic = usersResponse.getString("ProfilePic");
                                 String phoneNo = usersResponse.getString("PhoneNo");
+                                String firstLogin = usersResponse.getString("FirstLogin");
 
-                                Users user = new Users(displayName,gender,dob,profilePic,phoneNo);
+                                Users user = new Users(displayName,gender,dob,profilePic,phoneNo,firstLogin);
                                 userList.add(user);
                             }
                             setInformation();
@@ -384,6 +383,10 @@ public class EditProfileActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            if(usedToStoreFirstLogin.getText().toString().equals("T")){
+                               notifcationCall();
+                            }
+
                             Toast.makeText(getApplicationContext(),"Your Profile Has Been Successfully Updated",Toast.LENGTH_LONG).show();
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
@@ -425,7 +428,43 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void notifcationCall(){
+        int NOTIFICATION_ID = 234;
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String CHANNEL_ID="Carbon Credit Added";
+        CharSequence name = "Congratulation";
+        String Description = "1000 carbon credit has been added your account.";
+
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription(Description);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.BLUE);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.setShowBadge(false);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(EditProfileActivity.this,CHANNEL_ID)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Carbon Bank Notification")
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),R.drawable.ic_launcher))
+                .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400}) //VIBRATION
+                .setLights(Color.BLUE,3000,3000) //LED LIGHT
+                .setContentText("Thanks for completing your profile, 1000 carbon credit has been added your account.");
+
+        final Intent intent = new Intent(this,HomeActivity.class);
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(this, 0, intent, 0);
+        notificationBuilder.setContentIntent(contentIntent);
+        notificationManager.notify(1,notificationBuilder.build());
+    }
+
     private void setInformation(){
+        usedToStoreFirstLogin.setText(userList.get(0).getFirstLogin());
         etDisplayName.setText(userList.get(0).getDisplayName());
 
         if(userList.get(0).getGender().equals("M")){
@@ -451,6 +490,8 @@ public class EditProfileActivity extends AppCompatActivity {
         }else{
             civProfilePic.setImageResource(R.drawable.testimg);
         }
+
+
     }
 
     private String getMonthInWord(int month){
@@ -458,40 +499,40 @@ public class EditProfileActivity extends AppCompatActivity {
 
         switch (month){
             case 1:
-                monthInWord = "JAN";
+                monthInWord = "Jan";
                 break;
             case 2:
-                monthInWord = "FEB";
+                monthInWord = "Feb";
                 break;
             case 3:
-                monthInWord = "MAR";
+                monthInWord = "Mar";
                 break;
             case 4:
-                monthInWord = "APR";
+                monthInWord = "Apr";
                 break;
             case 5:
-                monthInWord = "MAY";
+                monthInWord = "May";
                 break;
             case 6:
-                monthInWord = "JUN";
+                monthInWord = "Jun";
                 break;
             case 7:
-                monthInWord = "JUL";
+                monthInWord = "Jul";
                 break;
             case 8:
-                monthInWord = "AUG";
+                monthInWord = "Aug";
                 break;
             case 9:
-                monthInWord = "SEP";
+                monthInWord = "Sep";
                 break;
             case 10:
-                monthInWord = "OCT";
+                monthInWord = "Oct";
                 break;
             case 11:
-                monthInWord = "NOV";
+                monthInWord = "Nov";
                 break;
             case 12:
-                monthInWord = "DEC";
+                monthInWord = "Dec";
                 break;
         }
         return monthInWord;
