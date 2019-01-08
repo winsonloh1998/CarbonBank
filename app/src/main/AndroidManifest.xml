@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -41,8 +41,8 @@
             android:parentActivityName=".RegisterActivity" />
         <activity
             android:name=".QrScannerActivity"
-            android:parentActivityName=".HomeActivity"
             android:label="@string/qr_code_title"
+            android:parentActivityName=".HomeActivity"
             android:theme="@style/HomepageTheme" />
         <activity
             android:name=".EditProfileActivity"
@@ -54,11 +54,25 @@
             android:label="@string/editProfileTitle"
             android:parentActivityName=".HomeActivity"
             android:theme="@style/HomepageTheme" />
-
-        <activity android:name=".SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/setting"
             android:parentActivityName=".HomeActivity"
+            android:theme="@style/HomepageTheme" />
+        <activity
+            android:name=".CarbonCreditActivity"
+            android:label="Carbon Credit History"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/HomepageTheme" />
+        <activity android:name=".CarbonTaxActivity"
+            android:label="Carbon Taxes Payment"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/HomepageTheme"></activity>
+
+        <activity android:name=".RewardDetailActivity"
             android:theme="@style/HomepageTheme"
-            android:label="@string/setting"/>
+            android:label="@string/rewardDetailTitle"
+            android:parentActivityName=".HomeActivity"/>
     </application>
 
 </manifest>

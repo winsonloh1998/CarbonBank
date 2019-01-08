@@ -73,6 +73,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView tvErrorMsg;
     private String errorMsgForAll;
     private TextView usedToStoreFirstLogin;
+    Date date = Calendar.getInstance().getTime();
+    CharSequence dt=android.text.format.DateFormat.format("dd/MM/yyyy  hh:mm:ss",date.getTime());
 
     private static final String TAG = "EditProfileAcitivity";
     private static final String TAG_UPDATE = "UpdateProfile";
@@ -385,14 +387,18 @@ public class EditProfileActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             if(usedToStoreFirstLogin.getText().toString().equals("T")){
                                notifcationCall();
+                                CreditHistory ch=new CreditHistory(String.format("%s",dt),"First Login Reward",1000,1);
+                                CarbonCreditActivity.creditList.push(ch);
                             }
 
                             Toast.makeText(getApplicationContext(),"Your Profile Has Been Successfully Updated",Toast.LENGTH_LONG).show();
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
                             finish();
+
                         }
                     },
+
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {

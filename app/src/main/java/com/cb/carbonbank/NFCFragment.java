@@ -109,4 +109,5 @@ public class NFCFragment extends Fragment {
             ((Vibrator) getLayoutInflater().getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(150);
         }
     }
+
 }

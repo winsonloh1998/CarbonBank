@@ -62,7 +62,17 @@
     <string name="nfcDesc">Place your back of your device against the NFC card reader.</string>
 
 
-    <string name="cc_description">Current Balance \n View details for trade history</string>
-    <string name="ct_descriptoin">Current Payable Taxes \n View details for taxes history</string>
+    <string name="cc_description">Current Balance \n\n View details for transaction history</string>
+    <string name="ct_descriptoin">Current Payable Taxes \n\n\n Pay How Much You Used \n Save the Environment Together</string>
+    <string name="title_activity_carbon_credit">CarbonCreditActivity</string>
+
+    <string name="no_record">No Record</string>
+    <string name="Date">Date</string>
+    <string name="Description">Description</string>
+    <string name="Transaction">Transaction</string>
+
+
+    <string name="rewardDetailTitle">Reward Detail</string>
+    <string name="redeemButton">Redeem Reward</string>
 
 </resources>

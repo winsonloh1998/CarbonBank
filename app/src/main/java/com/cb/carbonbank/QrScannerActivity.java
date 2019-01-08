@@ -2,12 +2,15 @@ package com.cb.carbonbank;
 
 import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Color;
 import android.net.Uri;
@@ -39,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +61,9 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
     private String currentUser;
     private static final int amtCCToAdd= 3;
     long vibrateDuration = 2000;
+    Date date = Calendar.getInstance().getTime();
+    CharSequence dt=android.text.format.DateFormat.format("dd/MM/yyyy  hh:mm:ss",date.getTime());
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +180,7 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), "Error " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
+
                         finish();
                     }
             });
@@ -179,6 +188,8 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
             AlertDialog alert = popUpAlert.create();
             alert.show();
             notifcationCall();
+            CreditHistory newch=new CreditHistory(String.format("%s",dt),"Public Transport Reward",3,1);
+            CarbonCreditActivity.creditList.push(newch);
         }else{
             AlertDialog.Builder popUpAlert = new AlertDialog.Builder(QrScannerActivity.this);
             popUpAlert.setMessage("Invalid QR Code.").setCancelable(false)
@@ -195,16 +206,37 @@ public class QrScannerActivity extends AppCompatActivity implements ZXingScanner
     }
 
     private void notifcationCall(){
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+        int NOTIFICATION_ID = 234;
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String CHANNEL_ID="Carbon Credit Added";
+        CharSequence name = "Congratulation";
+        String Description = "3 carbon credit has been added your account.";
+
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription(Description);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.BLUE);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.setShowBadge(false);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(QrScannerActivity.this,CHANNEL_ID)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Carbon Bank Notification")
-                .setVibrate(new long[]{1000,1000,1000,1000,1000}) //VIBRATION
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(),R.drawable.ic_launcher))
+                .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400}) //VIBRATION
                 .setLights(Color.BLUE,3000,3000) //LED LIGHT
-                .setColor(getResources().getColor(R.color.colorPrimary))
                 .setContentText("Congratulations, you have just received 3 carbon credit by using qr scanner.");
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final Intent intent = new Intent(this,HomeActivity.class);
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(this, 0, intent, 0);
+        notificationBuilder.setContentIntent(contentIntent);
         notificationManager.notify(1,notificationBuilder.build());
     }
 

@@ -88,10 +88,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private int countAlert = 0;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
-    private Button btnView;
-    private TextView content;
 
     public static int cc=0;
     public static int ct=0;
@@ -141,9 +137,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             authUser = sharedPreferences.getString("authenticatedUser", "Anonymous");
             downloadUsers(getApplicationContext(), authUser);
-
-
         }
+
 
 
 
@@ -178,11 +173,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = menuItem.getItemId();
 
         if(id == R.id.home){
-
+            Intent intent=new Intent(this,HomeActivity.class);
+            startActivity(intent);
         }else if(id == R.id.cc){
-
+            Intent intent=new Intent(this,CarbonCreditActivity.class);
+            startActivity(intent);
         }else if(id == R.id.ct){
+            Intent intent=new Intent(this,CarbonTaxActivity.class);
+            startActivity(intent);
+        }else if(id == R.id.reward){
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
+            //2. Create a Fragment Transaction
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            //3. Create an instance of a fragment
+            RewardFragment fragment = new RewardFragment();
+
+            //4. Perform fragment transaction
+            fragmentTransaction.replace(R.id.fragment_container,fragment);
+
+            //5. Commit a transaction
+            fragmentTransaction.commit();
         }else if(id == R.id.scanQrCode){
             Intent intent = new Intent(this,QrScannerActivity.class);
             startActivity(intent);
@@ -318,10 +330,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void setInformation(){
         if(userList.size() > 0){
-            mSectionsPagerAdapter=new SectionsPagerAdapter(getSupportFragmentManager());
-            mViewPager = (ViewPager) findViewById(R.id.container);
-            mViewPager.setAdapter(mSectionsPagerAdapter);
-            btnView=findViewById(R.id.viewDetails);
+
+            /*********************************************/
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            //2. Create a Fragment Transaction
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            //3. Create an instance of a fragment
+            home_fragment fragment = new home_fragment();
+
+            //4. Perform fragment transaction
+            fragmentTransaction.replace(R.id.fragment_container,fragment);
+
+            //5. Commit a transaction
+            fragmentTransaction.commit();
+            /*****************************************************/
             tvDrawerDisplayName.setText(userList.get(0).getDisplayName());
             tvDrawerEmail.setText(userList.get(0).getEmail());
 
@@ -418,90 +442,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 2;
-        }
-    }
-
-
-
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.home_viewpage, null);
-            //Textview and image view from fragment.xml
-            TextView titleTv=(TextView)rootView.findViewById(R.id.titleTv) ;
-            TextView content=(TextView)rootView.findViewById(R.id.content);
-            TextView description=(TextView)rootView.findViewById(R.id.description);
-            Button viewDetails=(Button)rootView.findViewById(R.id.viewDetails);
-            SharedPreferences sharedPreferences;
-
-
-
-            if(getArguments().getInt(ARG_SECTION_NUMBER)==1) {
-                titleTv.setText(R.string.carboncredit);
-                content.setText(cc+" cc");
-                description.setText(R.string.cc_description);
-                viewDetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent=new Intent(getActivity(),ProfilePicActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-            else if(getArguments().getInt(ARG_SECTION_NUMBER)==2){
-                titleTv.setText(R.string.carbontax);
-                content.setText(String.format("RM %d",ct));
-                description.setText(R.string.ct_descriptoin);
-                viewDetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent=new Intent(getActivity(),ProfilePicActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-
-            return rootView;
-        }
     }
 
 //    @Override
@@ -515,4 +456,4 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //        super.onStart();
 //        downloadUsers(getApplicationContext(),authUser);
 //    }
-}
+
