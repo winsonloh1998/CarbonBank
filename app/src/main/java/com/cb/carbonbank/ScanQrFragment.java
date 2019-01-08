@@ -1,6 +1,7 @@
 package com.cb.carbonbank;
 
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,12 +16,14 @@ import com.google.zxing.WriterException;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
+import static android.content.Context.MODE_PRIVATE;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class ScanQrFragment extends Fragment {
 
+
+    private static final String prefName = "AuthenticatedUser";
+    private SharedPreferences sharedPreferences;
 
     public ScanQrFragment() {
         // Required empty public constructor
@@ -33,8 +36,10 @@ public class ScanQrFragment extends Fragment {
         View view;
         view = inflater.inflate(R.layout.fragment_scan_qr, container, false);
 
-        String privatekey="M1001";
-        QRGEncoder qrgEncoder = new QRGEncoder(privatekey, null, QRGContents.Type.TEXT, 350);
+        sharedPreferences = getActivity().getSharedPreferences(prefName,MODE_PRIVATE);
+        String authUser = sharedPreferences.getString("authenticatedUser", "Anonymous");
+
+        QRGEncoder qrgEncoder = new QRGEncoder(authUser, null, QRGContents.Type.TEXT, 350);
 
         try {
             // Getting QR-Code as Bitmap
@@ -45,8 +50,6 @@ public class ScanQrFragment extends Fragment {
         } catch (WriterException e) {
             e.toString();
         }
-
         return view;
     }
-
 }
