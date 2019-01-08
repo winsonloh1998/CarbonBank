@@ -9,3 +9,6 @@ Team Member:
 -Khor Chun Heng
 -Lim Kim Ghiap
 -Loh Chee Chuan
+
+Lecturer:
+Mr. See Kwee Teck
